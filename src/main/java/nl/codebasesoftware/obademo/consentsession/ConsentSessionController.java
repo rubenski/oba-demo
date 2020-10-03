@@ -2,6 +2,7 @@ package nl.codebasesoftware.obademo.consentsession;
 
 import com.obaccelerator.sdk.Oba;
 import com.obaccelerator.sdk.consentsession.ConsentSession;
+import com.obaccelerator.sdk.consentsession.UserReturnedUrl;
 import nl.codebasesoftware.obademo.ObaDemoProperties;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,25 +27,19 @@ public class ConsentSessionController {
                 createConsentSessionRequest.getCountryDataProviderSystemName(),
                 String.format("https://%s/user-return", obaDemoProperties.getApplicationDomain()),
                 UUID.randomUUID());
-        try {
-            return oba.createConsentSession(request, userId);
-        } catch (Exception e) {
-            String test = "";
-        }
-
-        return null;
+        return oba.createConsentSession(request, userId);
     }
 
     @PatchMapping("/oauth-consent-sessions/{stateId}")
     public ConsentSession patchConsentSessionWithReturnedUser(@CookieValue(value = "demo-user") UUID userId,
                                                               @RequestBody @Valid UserReturnedUrl userReturnedUrl,
                                                               @PathVariable UUID stateId) {
-        return oba.updateConsentSessionWithReturningUser(stateId, userId, userReturnedUrl.getUserReturnedUrl());
+        return oba.updateConsentSessionWithReturningUser(stateId, userId, userReturnedUrl);
     }
 
     @GetMapping("/oauth-consent-sessions/{stateId}")
-    public ConsentSession patchConsentSessionWithReturnedUser(@CookieValue(value = "demo-user") UUID userId,
-                                                              @PathVariable UUID stateId) {
+    public ConsentSession getConsentSession(@CookieValue(value = "demo-user") UUID userId,
+                                            @PathVariable UUID stateId) {
         return oba.findConsentSession(userId, stateId);
     }
 }

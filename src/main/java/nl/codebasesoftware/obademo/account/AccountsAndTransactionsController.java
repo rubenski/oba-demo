@@ -13,8 +13,6 @@ import java.util.UUID;
 @RestController
 public class AccountsAndTransactionsController {
 
-    private static final int TRANSACTIONS_PER_PAGE = 100;
-
     private final Oba oba;
 
     public AccountsAndTransactionsController(Oba oba) {
@@ -34,11 +32,12 @@ public class AccountsAndTransactionsController {
     }
 
     @GetMapping("/transactions")
-    public TransactionPage findTransaction(@CookieValue(value = "demo-user") UUID userId,
-                                           @RequestParam UUID accountId,
-                                           @RequestParam int page) {
-        // Looking back 50 years, because some banks chose to provide really old dates on their mock transactions
+    public TransactionPage findTransactions(@CookieValue(value = "demo-user") UUID userId,
+                                            @RequestParam UUID accountId,
+                                            @RequestParam int page,
+                                            @RequestParam int transactionsPerPage) {
+        // Looking back 100 years, because some banks chose to provide really old dates on their mock transactions
         return oba.findTransactions(userId, accountId, LocalDate.now().minus(100, ChronoUnit.YEARS),
-                LocalDate.now(), page, TRANSACTIONS_PER_PAGE);
+                LocalDate.now(), page, transactionsPerPage);
     }
 }
