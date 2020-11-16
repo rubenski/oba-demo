@@ -3,9 +3,12 @@ package nl.codebasesoftware.obademo.consentsession;
 import com.obaccelerator.sdk.Oba;
 import com.obaccelerator.sdk.consentsession.ConsentSession;
 import com.obaccelerator.sdk.consentsession.UserReturnedUrl;
+import com.obaccelerator.sdk.exception.BadRequestException;
+import lombok.*;
 import nl.codebasesoftware.obademo.ObaDemoProperties;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.UUID;
 
@@ -32,14 +35,30 @@ public class ConsentSessionController {
 
     @PatchMapping("/oauth-consent-sessions/{stateId}")
     public ConsentSession patchConsentSessionWithReturnedUser(@CookieValue(value = "demo-user") UUID userId,
-                                                              @RequestBody @Valid UserReturnedUrl userReturnedUrl,
+                                                              @RequestBody @Valid ConsentSessionController.DemoUserReturnedUrl demoUserReturnedUrl,
+                                                              HttpServletRequest httpServletRequest,
                                                               @PathVariable UUID stateId) {
-        return oba.updateConsentSessionWithReturningUser(stateId, userId, userReturnedUrl);
+        try {
+            UserReturnedUrl userReturnedUrl = new UserReturnedUrl(demoUserReturnedUrl.userReturnedUrl, httpServletRequest.getRemoteAddr());
+            return oba.updateConsentSessionWithReturningUser(stateId, userId, userReturnedUrl);
+        } catch (BadRequestException e) {
+            if (e.getCode().equals("CST008")) {
+
+            }
+        }
+        return null;
     }
 
     @GetMapping("/oauth-consent-sessions/{stateId}")
     public ConsentSession getConsentSession(@CookieValue(value = "demo-user") UUID userId,
                                             @PathVariable UUID stateId) {
         return oba.findConsentSession(userId, stateId);
+    }
+
+    @Getter
+    @Setter
+    private static class DemoUserReturnedUrl {
+        @NonNull
+        String userReturnedUrl;
     }
 }

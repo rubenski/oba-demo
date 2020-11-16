@@ -17,8 +17,8 @@ public class ObaDemoApplication {
 
     @Bean
     public Oba oba() throws UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException {
-        UUID applicationId = UUID.fromString("7eb0a927-fa91-11ea-9969-15885d1f310a");
-        UUID publicKeyId = UUID.fromString("88d5b4e9-fa91-11ea-9969-d97ea1c01426");
+        UUID applicationId = UUID.fromString("45ded402-0aed-11eb-97d3-7b8aa7944835");
+        UUID publicKeyId = UUID.fromString("4d8a2d34-0aed-11eb-97d3-67091885b883");
         KeyStore keyStore = PfxUtil.loadKeyStore("/keys/signing-keystore.pfx", "Smeerkaas123!");
         Key signingKey = keyStore.getKey("signing", "Smeerkaas123!".toCharArray());
         return new Oba.Builder(Oba.ObaEnvironment.PRODUCTION, applicationId, signingKey, publicKeyId)

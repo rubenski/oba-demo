@@ -10,5 +10,4 @@ import java.util.UUID;
 @Setter
 public class RefreshTaskDetails {
     List<UUID> connectionIds;
-    String psuIpAddress;
 }

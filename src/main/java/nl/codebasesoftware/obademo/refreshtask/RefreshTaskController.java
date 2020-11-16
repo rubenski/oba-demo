@@ -5,6 +5,7 @@ import com.obaccelerator.sdk.refreshtask.CreateRefreshTaskRequest;
 import com.obaccelerator.sdk.refreshtask.RefreshTask;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.UUID;
@@ -20,9 +21,10 @@ public class RefreshTaskController {
 
     @PostMapping("/refresh-tasks")
     public RefreshTask createRefreshTask(@CookieValue(value = "demo-user") UUID userId,
+                                         HttpServletRequest request,
                                          @Valid @RequestBody RefreshTaskDetails details) {
         return oba.createRefreshTask(userId,
-                new CreateRefreshTaskRequest(details.getConnectionIds(), details.getPsuIpAddress()));
+                new CreateRefreshTaskRequest(details.getConnectionIds(), request.getRemoteAddr()));
     }
 
     @GetMapping("/refresh-tasks")
